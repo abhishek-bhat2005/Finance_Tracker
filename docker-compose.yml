@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/finance_tracker
+    depends_on:
+      - mongo
+
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
