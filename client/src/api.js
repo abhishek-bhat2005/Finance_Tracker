@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://finance-tracker-3-kamm.onrender.com/api',
   headers: {
     'Content-Type': 'application/json'
   }
