@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config({ path: './config.env' });
+require('dotenv').config({ path: path.join(__dirname, 'config.env') });
 
 const app = express();
 
@@ -138,10 +138,23 @@ app.get('/api/health', (req, res) => {
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
+  const clientDistPath = path.resolve(__dirname, '../client/dist');
+  const clientIndexPath = path.join(clientDistPath, 'index.html');
+
+  if (!fs.existsSync(clientIndexPath)) {
+    console.error(`Frontend build not found at ${clientIndexPath}. Run the root build command before starting the server.`);
+  }
+
+  app.use(express.static(clientDistPath));
   
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    if (!fs.existsSync(clientIndexPath)) {
+      return res.status(503).json({
+        message: 'Frontend build is unavailable. Run the root build command before starting the server.'
+      });
+    }
+
+    res.sendFile(clientIndexPath);
   });
 }
 

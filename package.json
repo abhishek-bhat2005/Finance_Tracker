@@ -8,8 +8,8 @@
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install",
-    "build": "cd client && npm run build",
-    "start": "cd server && npm start"
+    "build": "npm ci --prefix server && npm ci --prefix client && npm run build --prefix client",
+    "start": "node server/server.js"
   },
   "keywords": ["finance", "tracker", "mern", "react", "node", "mongodb"],
   "author": "Finance Tracker Team",
